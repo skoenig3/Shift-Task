@@ -67,10 +67,10 @@ fixdistance = distCDF(:,sacend+1:end);
 persistence.sac = nanmean(data.persistence(:,1:sacend));
 persistence.fix = nanmean(data.persistence(:,sacend+1:end));
 sacduration = data.sacduration(1:end); sacduration(isnan(sacduration)) = [];
-probsacduration = hist(sacduration,max(sacduration));
+probsacduration = hist(sacduration,1:max(sacduration));
 sacdurationCDF = cumsum(probsacduration)/sum(probsacduration);
 fixduration = data.fixduration(1:end); fixduration(isnan(fixduration)) = [];
-probfixduration = hist(fixduration,max(fixduration));
+probfixduration = hist(fixduration,1:max(fixduration));
 fixdurationCDF = cumsum(probfixduration)/sum(probfixduration);
 sacangle = data.sacangle; sacangle = sacangle(1:end); sacangle(isnan(sacangle))= [];
 sacangle = sacangle*180/pi+180;
@@ -183,13 +183,18 @@ for n = 1:nn;
         previous_fixations(:,end) =[x;y];
     end
     
+    
     sacdur = find(rand <= sacdurationCDF);
     sacdur = sacdur(1);
+    sacdur(sacdur < 2) = 2;
     timewarp = round(linspace(1,sacend,sacdur));
+    %saccade amplitude and over time is controlled
     sacdist = sacdistance(:,timewarp);
     persac = persistence.sac(timewarp);
+    %select a random fixation duration
     fixdur = find(rand <= fixdurationCDF);
     fixdur = fixdur(1);
+    fixdur(fixdur < 5) = 5;
     timewarp = round(linspace(1,size(fixdistance,2),fixdur));
     fixdist = fixdistance(:,timewarp);
     perfix = persistence.fix(timewarp);
