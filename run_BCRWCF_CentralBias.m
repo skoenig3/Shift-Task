@@ -206,16 +206,7 @@ for n = 1:nn;
     fxx(Cind) = 0;
     fyy(Cind) = 0;
     while t < trialtime
-        if round(tmr*1/dt)+1 <= sacdur;
-            dhr = find(sacdist(:,round(tmr*1/dt)+1) >= rand);
-            dh = dhr(1);
-            b = persac(round(tmr*1/dt)+1)/2;
-        else
-            dhr = find(fixdist(:,round(tmr*1/dt)-sacdur+1) >= rand);
-            dh = dhr(1);
-            b = perfix(round(tmr*1/dt)-sacdur+1);
-        end
-        if round(tmr*1/dt)+1 == sacdur + fixdur
+        if round(tmr*1/dt)+1 == (sacdur + fixdur+1) %end fixation period so reset model
             xy = ceil(mean(xxyy(:,1:5),2));
             if strcmpi(plotoptions.runs,'all')
                 plot(xy(1),xy(2),'*k','markersize',6)
@@ -241,21 +232,32 @@ for n = 1:nn;
             
             sacdur = find(rand <= sacdurationCDF);
             sacdur = sacdur(1);
+            sacdur(sacdur < 2) = 2;
             timewarp = round(linspace(1,sacend,sacdur));
             sacdist = sacdistance(:,timewarp);
             persac = persistence.sac(timewarp);
             fixdur = find(rand <= fixdurationCDF);
             fixdur = fixdur(1);
+            fixdur(fixdur < 5) = 5;
             timewarp = round(linspace(1,size(fixdistance,2),fixdur));
             fixdist = fixdistance(:,timewarp);
             perfix = persistence.fix(timewarp);
         end
-        if tmr == 0; %just starting this simuliation                            
+        if round(tmr*1/dt)+1 <= sacdur;
+            dhr = find(sacdist(:,round(tmr*1/dt)+1) >= rand);
+            dh = dhr(1);
+            b = persac(round(tmr*1/dt)+1)/2;
+        else
+            dhr = find(fixdist(:,round(tmr*1/dt)-sacdur+1) >= rand);
+            dh = dhr(1);
+            b = perfix(round(tmr*1/dt)-sacdur+1);
+        end
+        if tmr == 0; %just starting this simuliation
             angr = find(sacangleCDF >= rand);
             ang = nang(angr(1));
         else
             if x > imageX-border_buffer || x < border_buffer || ...
-                    y > imageY-border_buffer || y < border_buffer %was 10
+                    y > imageY-border_buffer || y < border_buffer
                 if round(tmr*1/dt)+1 <= sacdur
                     [dh, ang] = border1(dh,x,y,imageX,imageY,dt,tmr,sacdur,...
                         border_sacdist,border_buffer);
