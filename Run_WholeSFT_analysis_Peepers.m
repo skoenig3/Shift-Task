@@ -674,7 +674,7 @@ imageY = 378;
 plotoptions.runs = 'none';
 plotoptions.probdens = 'none';
 plotoptions.type = 'sal';
-for SET = 2:length(image_sets);
+for SET = 1:length(image_sets);
     SETNUM = image_sets{SET};
     cd([sft_image_dir SETNUM])
     
@@ -776,6 +776,7 @@ for a = 1:9
     hold off
     axis off
     axis tight
+    colormap('jet')
 end
 
 runorder = [4 5 8 7 6 3 9 1 2]; %rearrange for plotting bar graphs

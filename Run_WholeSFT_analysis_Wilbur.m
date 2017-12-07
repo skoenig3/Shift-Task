@@ -766,7 +766,7 @@ startpos =  [10     189;
     746     368;
     10      10];
 
-
+%%
 order = [2 5 8 1 4 7 9 3 6]; %rearrange for plotting fixation pdfs
 figure
 for a = 1:9
@@ -778,8 +778,9 @@ for a = 1:9
     hold off
     axis off
     axis tight
+    colormap('jet')
 end
-
+%%
 runorder = [4 5 8 7 6 3 9 1 2]; %rearrange for plotting bar graphs
 centroids = centroids(runorder);
 stds = NaN(9,2);
@@ -807,11 +808,11 @@ legend('Horizontal','Vertical')
 %%
 [P,ANOVATAB,STATS] = anovan(allcentroids(:,1),images)
 multcompare(STATS);
-
+%%
 [P,ANOVATAB,STATS] = anova1(allcentroids(:,1),centers)
 multcompare(STATS);
 set(gca,'Yticklabel',direction(end:-1:1))
-
+%%
 [P,ANOVATAB,STATS] = anovan(allcentroids(:,2),images)
 multcompare(STATS);
 
